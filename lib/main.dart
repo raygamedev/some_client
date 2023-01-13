@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:some_client/BarcodeScanner.dart';
 
 void main() {
   runApp(const Some());
@@ -36,31 +36,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    MobileScanner mb = MobileScanner(
-        allowDuplicates: false,
-        onDetect: (barcode, args) {
-          if (barcode.rawValue == null) {
-            debugPrint('Failed to scan Barcode');
-          } else {
-            final String code = barcode.rawValue!;
-            debugPrint('Barcode found! $code');
-          }
-        });
-
     return Scaffold(
         appBar: AppBar(title: const Text('Mobile Scanner')),
-        body: Center(
-          child: ClipRRect(
-            borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(20),
-                topRight: Radius.circular(20),
-                bottomLeft: Radius.circular(20),
-                bottomRight: Radius.circular(20)),
-            child: SizedBox(
-                height: _getScreenHeight() * 0.4,
-                width: _getScreenWidth() * 0.8,
-                child: mb),
-          ),
-        ));
+        body: const Center(child: BarcodeScannerWidget()));
   }
 }
