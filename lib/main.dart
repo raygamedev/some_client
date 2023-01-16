@@ -1,43 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:some_client/BarcodeScanner.dart';
+import 'package:some_client/homepage.dart';
 
-void main() {
-  runApp(const Some());
+void main() async {
+  runApp(Some());
 }
 
-class Some extends StatelessWidget {
+class Some extends StatefulWidget {
   const Some({super.key});
 
+  @override
+  State<Some> createState() => _SomeState();
+}
+
+class _SomeState extends State<Some> {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: const HomePage(title: 'Flutter Demo Home Page'),
+    return const MaterialApp(
+      home: HomePage(),
     );
-  }
-}
-
-class HomePage extends StatefulWidget {
-  const HomePage({super.key, required this.title});
-
-  final String title;
-
-  @override
-  State<HomePage> createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
-  double _getScreenHeight() => MediaQuery.of(context).size.height;
-  double _getScreenWidth() => MediaQuery.of(context).size.width;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(title: const Text('Mobile Scanner')),
-        body: const Center(child: BarcodeScannerWidget()));
   }
 }
