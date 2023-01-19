@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:some_client/barcodescanner.dart';
-import 'package:some_client/card.dart';
 
 class MerchantWidget extends StatefulWidget {
   final String merchantId;
@@ -71,9 +70,9 @@ class _MerchantWidgetState extends State<MerchantWidget> {
                 image: AssetImage('assets/images/nahatLogo.png')),
           ),
         )),
-        CardWidget(onMarkTap: _openCamera),
+        // CardWidget(onMarkTap: _openCamera),
         if (_isCameraOpen)
-          const Positioned(child: Center(child: BarcodeScannerWidget())),
+          const Positioned(child: Center(child: BarcodeScannerWidget(onBarcodeScan: ,))),
       ],
     );
   }

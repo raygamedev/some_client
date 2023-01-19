@@ -1,0 +1,1 @@
+class GetCardError implements Exception {}

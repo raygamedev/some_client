@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
 class BarcodeScannerWidget extends StatefulWidget {
-  const BarcodeScannerWidget({super.key});
+  final Function(Barcode, int) onBarcodeScan;
+  const BarcodeScannerWidget({super.key, required this.onBarcodeScan});
 
   @override
   State<BarcodeScannerWidget> createState() => _BarcodeScannerWidgetState();
@@ -25,14 +26,7 @@ class _BarcodeScannerWidgetState extends State<BarcodeScannerWidget> {
           width: _getScreenWidth() * 0.8,
           child: MobileScanner(
               allowDuplicates: false,
-              onDetect: (barcode, args) {
-                if (barcode.rawValue == null) {
-                  debugPrint('Failed to scan Barcode');
-                } else {
-                  final String code = barcode.rawValue!;
-                  debugPrint('Barcode found! $code');
-                }
-              })),
+              onDetect: (barcode, args) => widget.onBarcodeScan(barcode, 1))),
     );
   }
 }

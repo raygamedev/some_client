@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:some_client/api/card.dart';
 import 'package:some_client/barcodescanner.dart';
 import 'package:some_client/card.dart';
@@ -15,12 +16,47 @@ class CardsScreen extends HookWidget {
   Widget build(BuildContext context) {
     final isCameraOpen = useState<bool>(false);
     final card = useState<CardModel?>(null);
+    final barcode = useState<String>('');
+
+    Future<CardModel> onCardMark(int markIndex) async {
+      try {
+        CardModel card = await markCard(userUUID, merchantId, markIndex);
+        return card;
+      } catch (e) {
+        // TODO:// Handle errors better
+        debugPrint("error marking card $e");
+        return CardModel.error();
+      }
+    }
+
+    final setBarcodeCallback = useCallback((Barcode val, int markIndex) {
+      if (val.rawValue == null) {
+        // TODO Present error print!
+        return;
+      }
+      barcode.value = val.rawValue!;
+      isCameraOpen.value = false;
+      onCardMark(markIndex).then((value) {
+        print(value.cardMarks);
+        card.value = value;
+      });
+    }, [barcode, isCameraOpen]);
+
     useEffect(() {
       if (userUUID.isNotEmpty) {
-        requestNewCard(userUUID, merchantId).then((value) {
-          card.value = value;
+        // Check for active user card with merchantId
+        getActiveCard(userUUID, merchantId).then((value) {
+          if (value.cardId.isNotEmpty) {
+            card.value = value;
+          } else {
+            // If card doesn't exists, request a new one!
+            requestNewCard(userUUID, merchantId).then((value) {
+              card.value = value;
+            });
+          }
         });
       }
+      return null;
     }, [userUUID]);
 
     return Stack(
@@ -69,7 +105,10 @@ class CardsScreen extends HookWidget {
                 color: card.value!.color)
             : const Center(child: CircularProgressIndicator()),
         if (isCameraOpen.value)
-          const Positioned(child: Center(child: BarcodeScannerWidget())),
+          Positioned(
+              child: Center(
+                  child:
+                      BarcodeScannerWidget(onBarcodeScan: setBarcodeCallback))),
       ],
     );
   }
